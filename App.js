@@ -8,8 +8,9 @@
 
 import React, { Component } from 'react'
 import { Platform, StyleSheet, View } from 'react-native'
-import PickImage from './src/try/PickImage.js'
-import ReactNavigation from './src/try/ReactNavigation.js'
+import PickImage from './src/try/PickImage'
+import StackNavigator from './src/try/StackNavigator'
+import { BottomTabNavigator, DrawerNavigator, SwitchNavigator } from './src/try/Navigators'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -21,13 +22,11 @@ const instructions = Platform.select({
 export default class App extends Component {
   render () {
     const pickImg = (<PickImage/>)
-    const nav = (<ReactNavigation/>)
-    return nav || (
-      <View style={styles.container}>
-        {false && pickImg}
-        {true && nav}
-      </View>
-    )
+    const stackNavigator = (<StackNavigator/>)
+    const bottomTabNavigator = (<BottomTabNavigator/>)
+    const drawerNavigator = (<DrawerNavigator/>)
+    const switchNavigator = (<SwitchNavigator/>)
+    return (<View style={styles.container}>{bottomTabNavigator}</View>)
   }
 }
 
@@ -35,7 +34,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    alignItems: 'center'
   }
 })
