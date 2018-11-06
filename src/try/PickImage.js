@@ -3,7 +3,7 @@ import { Image, View } from 'react-native'
 import { Button } from 'react-native-elements'
 import ImagePicker from 'react-native-image-picker'
 
-export default class Home extends React.Component {
+export default class PickImage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {

@@ -8,7 +8,8 @@
 
 import React, { Component } from 'react'
 import { Platform, StyleSheet, View } from 'react-native'
-import Home from './src/Home'
+import PickImage from './src/try/PickImage.js'
+import ReactNavigation from './src/try/ReactNavigation.js'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -19,9 +20,12 @@ const instructions = Platform.select({
 
 export default class App extends Component {
   render () {
-    return (
+    const pickImg = (<PickImage/>)
+    const nav = (<ReactNavigation/>)
+    return nav || (
       <View style={styles.container}>
-        <Home/>
+        {false && pickImg}
+        {true && nav}
       </View>
     )
   }
