@@ -4,11 +4,6 @@ import { createStackNavigator } from 'react-navigation'
 
 class BaseScreen extends React.Component {
 
-  constructor (props) {
-    super(props)
-    this.state = {name: undefined}
-  }
-
   componentDidMount () {
     console.log(`挂载:`, this.constructor.name)
   }
@@ -47,7 +42,7 @@ class Screen1 extends BaseScreen {
         <Button title={'back'} onPress={() => {this.props.navigation.goBack()}}/>
         <Button title={'CustomTitle'} onPress={() => {this.props.navigation.navigate('CustomTitle')}}/>
         <View>
-          <Text>路由参数:{this.state.name}</Text>
+          <Text>路由参数:{this.props.name}</Text>
           <TextInput value={undefined} style={{borderWidth: 2, borderColor: '#a88ef4'}}
                      onChangeText={val => {this.setState({name: val})}}/>
         </View>
@@ -101,23 +96,10 @@ class CustomTitle extends BaseScreen {
 export default createStackNavigator(
   {Screen1: Screen1, Screen2: Screen2, Screen3: Screen3, CustomTitle: CustomTitle},
   {
-    initialRouteName: 'Screen1',
-    navigationOptions: ({navigation}) => {
-      return {
-        title: navigation.getParam('title', 'title param is null'),
-        headerStyle: {
-          backgroundColor: '#7a8ab2',
-        },
-        headerTintColor: '#e1ff7f',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          fontStyle: 'italic'
-        }
-      }
-    }
+    initialRouteName: 'Screen1'
   }
 )
 const styles = StyleSheet.create({
-  rootView: {flex: 1, alignItems: 'center', justifyContent: 'center', borderWidth: 2},
+  rootView: {flex: 1, alignItems: 'center', justifyContent: 'center'},
   text: {fontSize: 40, color: '#8678ff', fontWeight: 'bold'}
 })
