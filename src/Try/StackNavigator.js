@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native'
-import { createStackNavigator } from 'react-navigation'
 
 class BaseScreen extends React.Component {
 
@@ -29,14 +28,15 @@ class BaseScreen extends React.Component {
   }
 }
 
-class Screen1 extends BaseScreen {
+export class Screen1 extends BaseScreen {
 
   render () {
+    console.log(this.props.navigation)
     return (
       <View style={styles.rootView}>
         <Text style={styles.text}>screen1</Text>
         <Button title={'navigate to Screen2'}
-                onPress={() => {this.props.navigation.navigate('Screen2', {name: this.state.name})}}/>
+                onPress={() => {this.props.navigation.navigate('Screen2', {name: this.props.name})}}/>
         <Button title={'push to Screen1'}
                 onPress={() => {this.props.navigation.push('Screen1')}}/>
         <Button title={'back'} onPress={() => {this.props.navigation.goBack()}}/>
@@ -51,7 +51,7 @@ class Screen1 extends BaseScreen {
   }
 }
 
-class Screen2 extends BaseScreen {
+export class Screen2 extends BaseScreen {
 
   render () {
     return (
@@ -64,7 +64,7 @@ class Screen2 extends BaseScreen {
   }
 }
 
-class Screen3 extends BaseScreen {
+export class Screen3 extends BaseScreen {
 
   render () {
     return (
@@ -76,29 +76,50 @@ class Screen3 extends BaseScreen {
   }
 }
 
-class CustomTitle extends BaseScreen {
+class Banner extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {img1: false}
+    this.img1 = require('../alipay.png')
+    this.img2 = require('../alipay_focus.png')
+  }
+
+  componentDidMount () {
+    this.timer = setInterval(() => this.setState(
+      state => {
+        return {img1: !state.img1}
+      }), 500)
+    console.log('启动定时器', this.timer)
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.timer)
+    console.log('销毁定时器', this.timer)
+  }
+
+  render () {
+    return (<Image source={this.state.img1 ? this.img1 : this.img2} style={{width: 50, height: 50}}/>)
+  }
+}
+
+export class CustomTitle extends BaseScreen {
   static navigationOptions = {
     headerTitle: (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}>
-        <Image source={require('../alipay.png')} style={{width: 50, height: 50}}/>
+      <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+        <Text>😂</Text>
+        <Banner/>
         <Text>😂</Text>
       </View>)
   }
 
   render () {
     return (
-      <View>
-        <Text>自定义题目</Text>
+      <View style={styles.rootView}>
+        <Text style={styles.text}>自定义题目</Text>
       </View>)
   }
 }
 
-export default createStackNavigator(
-  {Screen1: Screen1, Screen2: Screen2, Screen3: Screen3, CustomTitle: CustomTitle},
-  {
-    initialRouteName: 'Screen1'
-  }
-)
 const styles = StyleSheet.create({
   rootView: {flex: 1, alignItems: 'center', justifyContent: 'center'},
   text: {fontSize: 40, color: '#8678ff', fontWeight: 'bold'}

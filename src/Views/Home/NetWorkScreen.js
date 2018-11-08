@@ -1,10 +1,9 @@
 import React from 'react'
-import { RefreshControl, ScrollView } from 'react-native'
+import { ActivityIndicator, FlatList, Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
-import Icon from 'react-native-vector-icons/Entypo'
 import axios from 'axios'
 import { List, ListItem } from 'react-native-elements'
-import { Toast } from 'antd-mobile-rn'
+import { Card, Toast } from 'antd-mobile-rn'
 
 export class NetWorkOptionList extends React.Component {
   static navigationOptions = {headerTitle: '网络相关操作'}
@@ -29,7 +28,7 @@ export class Bilibili extends React.Component {
 
   constructor (props) {
     super(props)
-    this.state = {data: [], refreshing: false}
+    this.state = {data: [], refreshing: false, page: 1}
   }
 
   componentDidMount () {
@@ -42,36 +41,68 @@ export class Bilibili extends React.Component {
     axios({
       url: 'https://api.live.bilibili.com/area/liveList',
       params: {
-        area: 'all', page: 1, order: 'live_time'
+        area: 'all', page: this.state.page, order: 'live_time'
       }
     }).then(response => data.push(...response.data.data))
       .catch(error => Toast.fail(error, Toast.SHORT))
-      .then(() => this.setState({
-        data: data,
-        refreshing: false
-      }))
+      .then(() => {
+        this.setState(
+          state => {
+            data.forEach((item, index) => { item.key = index + state.data.length})
+            return {data: [...state.data, ...data], refreshing: false}
+          }
+        )
+      })
+  }
+
+  onEndReached () {
+    this.setState(state => { return {page: state.page + 1}})
+    this.loadData()
+  }
+
+  renderItem ({item, index}) {
+    return (
+      <Card key={index} style={{flex: 1, margin: 5}}>
+        <Card.Header title={<Text>{item.title}</Text>}/>
+        <Card.Body>
+          <Image source={{uri: item.system_cover || item.cover}} style={{minHeight: 80}}/>
+        </Card.Body>
+        <Card.Footer content={
+          <View style={{fex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+            <Image resizeMode={'cover'} source={{uri: item.face}} style={{width: 30, height: 30, borderRadius: 15}}/>
+            <Text numberOfLines={1} style={{flex: 1, marginLeft: 5}}>{item.uname}</Text>
+          </View>
+        }/>
+      </Card>)
+  }
+
+  renderEmpty () {
+    return (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', height: 100}}>
+      <Text>没有数据</Text>
+    </View>)
+  }
+
+  renderaFooter () {
+    return (this.state.data.length !== 0) ?
+      (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>{`第${this.state.page}页`}</Text>
+        <ActivityIndicator/>
+      </View>) : (<View></View>)
   }
 
   render () {
     return (
-      <ScrollView
-        refreshControl={(<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.loadData()}/>)}>
-        <List>
-          {this.state.data && this.state.data.map((item, index) => (
-            <ListItem avatar={item.pic} key={index} title={item.title}/>))}
-        </List>
-      </ScrollView>)
+      <FlatList refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => {
+        this.setState({page: 0})
+        this.loadData()
+      }}/>}
+                numColumns={2} data={this.state.data}
+                renderItem={this.renderItem.bind(this)}
+                onEndReached={this.onEndReached.bind(this)}
+                ListEmptyComponent={this.renderEmpty.bind(this)}
+                ListFooterComponent={this.renderaFooter.bind(this)}/>)
   }
 }
 
-export default class NetWorkScreen extends React.Component {
-  static navigationOptions = {
-    tabBarLabel: '网络操作',
-    tabBarIcon: ({tintColor}) => (<Icon name={'network'} size={30} color={tintColor}/>)
-  }
-
-  render () {
-    const Screen = createStackNavigator({NetWorkOptionList, Bilibili})
-    return (<Screen/>)
-  }
-}
+const NetWorkScreen = createStackNavigator({NetWorkOptionList, Bilibili})
+export default NetWorkScreen

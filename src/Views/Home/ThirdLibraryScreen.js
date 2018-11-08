@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { List, ListItem } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation'
 import PickImage from '@/Try/PickImage'
+import ReactNativeVideo from '@/Try/ReactNativeVideo'
 
 export class ThirdLibraryOptionList extends React.Component {
   static navigationOptions = {headerTitle: '第三方库'}
@@ -13,7 +14,13 @@ export class ThirdLibraryOptionList extends React.Component {
       {
         title: 'react-native-image-picker',
         onPress: () => this.props.navigation.navigate(PickImage.name)
-      }]
+      },
+      {
+        title: 'react-native-video',
+        onPress: () => this.props.navigation.navigate(ReactNativeVideo.name)
+      }
+
+    ]
     return (
       <ScrollView>
         <List>
@@ -31,7 +38,7 @@ export default class ThirdLibraryScreen extends React.Component {
   }
 
   render () {
-    const Screen = createStackNavigator({ThirdLibraryOptionList, PickImage})
+    const Screen = createStackNavigator({ThirdLibraryOptionList, PickImage, ReactNativeVideo})
     return (<Screen/>)
   }
 }
