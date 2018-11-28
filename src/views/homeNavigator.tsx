@@ -2,8 +2,8 @@
  * 主页 bottomTab 导航
  * */
 // @ts-ignore
-import {createAppContainer, createBottomTabNavigator} from "react-navigation";
-import React from "react";
+import {createAppContainer, createBottomTabNavigator} from "react-navigation"
+import React from "react"
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import NavigationScreen from './tabs/navigationScreen'
@@ -38,6 +38,6 @@ const bottomTabNavigator = createBottomTabNavigator({
     }
 })
 
-const AppContainer = createAppContainer(bottomTabNavigator);
+const AppContainer = createAppContainer(bottomTabNavigator)
 
 export default AppContainer
